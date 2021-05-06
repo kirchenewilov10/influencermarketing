@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="content">
+        <div class="row">
+            <div>
+                <ol class="breadcrumb">
+                    <li>Campaign</li>
+                    <li>Create</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <form class="">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label>Campaign Name</label>
+                                <input type="text" class="form-control form-control_c" id="cp_name" placeholder="">
+                            </div></div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 100px">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label>Brand</label>
+                                <select class="form-control form-control_c" id="brand_select" onchange="onselect_brand()">
+                                    {% for item in brand %}
+                                        <option value="{{ item.id }}">{{ item.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <input type="text" class="form-control form-control_c" id="brand_input" placeholder="" style="display: none">
+                            </div>
+                            <div class="col-sm-2">
+                                <label>Gender</label>
+                                <select class="form-control form-control_c" id="cp_gender">
+                                    {% for item in gender %}
+                                        <option value="{{ item.id }}">{{ item.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <label>KPI</label>
+                                <select class="form-control form-control_c" id="cp_kpi">
+                                    {% for item in kpi %}
+                                        <option value="{{ item.id }}">{{ item.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <label>Geography</label>
+                                <select class="form-control form-control_c" multiple name="geography_" id="geography_">
+                                    {% for item in geography %}
+                                        <option value="{{ item.id }}">{{ item.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <label>Age</label>
+                                <select class="form-control form-control_c" multiple name="age_" id="age_">
+                                    {% for item in age %}
+                                        <option value="{{ item }}">{{ item }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <label>Safety Score</label>
+                                <select class="form-control form-control_c" id="safety_score_">
+                                    {% for item in safety_score %}
+                                        <option value="{{ item.id }}">{{ item.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-6 form-group">
+                                <label>Competitive Brands</label>
+                                <select class="form-control form-control_c select2" multiple="multiple" style="width: 100%;" id="cb_select">
+                                    {% for item in competitors %}
+                                        <option value="{{ item.id }}">@{{ item.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label>Add new competitor</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">@</span>
+                                    <input type="text" class="form-control form-control_c mtp_cpt" id="cb_input" placeholder="" style="width: 200px">
+                                    <i class="fa fa-fw fa-plus-circle hand" style="font-size: 23px;padding-top: 5px" onclick="onclick_expand_competitors_input()"></i>
+                                </div>
+                                <div id="multiple_competitors"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label>Influencer Handles</label>
+                                <select class="form-control form-control_c select2" multiple="multiple" style="width: 100%;" id="ih_select">
+                                    {% for item in influencers %}
+                                        <option value="{{ item.id }}">@{{ item.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label>Add new influencer handle</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">@</span>
+                                    <input type="text" class="form-control form-control_c mtp_inf" id="ih_input" placeholder="" style="width: 200px">
+                                    <i class="fa fa-fw fa-plus-circle hand" style="font-size: 23px;padding-top: 5px" onclick="onclick_expand_influencer_input()"></i>
+                                </div>
+                                <div id="multiple_influencers"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button onclick="" type="button" style="font-size: 20px;float: right" class="btn btn-info">Start analysis</button>
+                        <button onclick="onsave_campaign()" type="button" style="font-size: 20px;float: right;margin-right: 10px" class="btn btn-info">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script>
+
+    $(document).ready(function () {
+        $('#campaign_table').DataTable({
+            dom: '<"top"R<"clear">>rt<"bottom"lip<"clear">>',
+            pagingType: "full_numbers",
+            scrollX: true,
+        });
+
+        onselect_brand();
+        $('.select2').select2();
+    });
+
+    function onselect_brand() {
+        let brand_item_id = parseInt($('#brand_select').val());
+        if (brand_item_id ===0) {
+            $('#brand_select').css('display', 'none');
+            $('#brand_input').css('display', 'block');
+        }
+    }
+
+    function onsave_campaign() {
+        let cp_name = $('#cp_name').val();
+        if (cp_name === ''){
+            alert('Fill the blank');return;
+        }
+
+        let brand_item_id = parseInt($('#brand_select').val());
+        let brand = {};
+        if (brand_item_id === 0){
+            brand.type = 0;
+            brand.value = $('#brand_input').val();
+        } else {
+            brand.type = 1;
+            brand.value = $('#brand_select').val();
+        }
+        let param = {};
+        param.cp_name = cp_name;
+        param.brand = JSON.stringify(brand);
+        param.gender = $('#cp_gender').val();
+        param.cp_kpi = $('#cp_kpi').val();
+        param.geography_ = JSON.stringify($('#geography_').val());
+        param.age = JSON.stringify($('#age_').val());
+        param.safety_score_ = $('#safety_score_').val();
+        param.competitive_brand_s = JSON.stringify($('#cb_select').val());
+        param.competitive_brand_i = JSON.stringify(get_multiple_competitors_to_add());
+        param.influencer_handle_s = JSON.stringify($('#ih_select').val());
+        param.influencer_handle_i = JSON.stringify(get_multiple_influencers_to_add());
+        $.ajax({
+            type: 'POST',
+            url: '/save_campaign',
+            data: param,
+            success: function (res) {
+                if (res === 'success') {
+                    alert ('SUCCESS');
+                    window.location.href = '/campaign';
+                } else {
+                    alert ('FAILURE');
+                }
+            }
+        })
+    }
+
+    function onclick_expand_influencer_input() {
+        let htm = '';
+        htm += '<div class="input-group" style="margin-top:5px">';
+        htm += '<span class="input-group-addon">@</span>';
+        htm += '<input type="text" class="form-control form-control_c mtp_inf" placeholder="" style="width: 200px">';
+        htm += '</div>';
+        $('#multiple_influencers').append(htm);
+    }
+
+    function onclick_expand_competitors_input() {
+        let htm = '';
+        htm += '<div class="input-group" style="margin-top:5px">';
+        htm += '<span class="input-group-addon">@</span>';
+        htm += '<input type="text" class="form-control form-control_c mtp_cpt" placeholder="" style="width: 200px">';
+        htm += '</div>';
+        $('#multiple_competitors').append(htm);
+    }
+
+    function get_multiple_competitors_to_add() {
+        let obj = $('.mtp_cpt');
+        let cn = obj.length;
+        let res = [];
+        for (var i=0; i < cn; i++) {
+            if (obj[i].value === '') continue;
+            res.push(obj[i].value);
+        }
+        return res;
+    }
+    function get_multiple_influencers_to_add() {
+        let obj = $('.mtp_inf');
+        let cn = obj.length;
+        let res = [];
+        for (var i=0; i < cn; i++) {
+            if (obj[i].value === '') continue;
+            res.push(obj[i].value);
+        }
+        return res;
+    }
+    </script>
+{% endblock %}
+

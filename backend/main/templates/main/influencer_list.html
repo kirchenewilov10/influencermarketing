@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="content">
+        <div class="row">
+            <div>
+                <ol class="breadcrumb">
+                    <li>Influencer</li>
+                    <li>List</li>
+                </ol>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <button onclick="onclick_add_influencer()" type="button" style="float: right" class="btn btn-info">Add influencer</button>
+            </div>
+        </div>
+                <table class="table table-bordered cutable" id="influencer_table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>API connected</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in table_data %}
+                        <tr>
+                            <td>{{ row.id }}</td>
+                            <td><a href="/influencer_detail/{{ row.id }}">{{ row.name }}</a></td>
+                            <td>{{ row.email }}</td>
+                            <td>
+                                {{ row.api_status }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+    </section>
+
+    <script>
+    $(document).ready(function () {
+        $('#influencer_table').DataTable({
+            dom: '<"top"R<"clear">>rt<"bottom"lip<"clear">>',
+            pagingType: "full_numbers",
+            scrollX: true,
+            columnDefs: [
+                {targets:0, visible: false}
+            ],
+        });
+
+    });
+
+    function onclick_add_influencer() {
+        window.location.href = '/add_influencer';
+    }
+    </script>
+{% endblock %}
+

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="content">
+        <div class="row">
+            <div>
+                <ol class="breadcrumb">
+                    <li>Influencer</li>
+                    <li>Add</li>
+                </ol>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <form>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label>Influencer Handle</label>
+                                <input type="text" class="form-control form-control_c" id="inf_handle" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <button onclick="onclick_save_influencer()" type="button" class="btn btn-info" style="float:right;margin-top: 6px">Add influencer</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script>
+    $(document).ready(function () {
+
+    });
+
+    function onclick_save_influencer() {
+        let param = {};
+        param.handle = $('#inf_handle').val();
+        $.ajax({
+            type: 'POST',
+            url: '/save_influencer',
+            data: param,
+            success: function (res) {
+                if (res === 'success') {
+                    alert ('SUCCESS');
+                    window.location.href = '/influencer';
+                } else {
+                    alert ('FAILURE');
+                }
+            }
+        });
+    }
+    </script>
+{% endblock %}
+

@@ -1,0 +1,586 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+        .tmp_but_handle {
+            width: 175px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+    </style>
+    <section class="content">
+        <div class="row">
+            <div>
+                <ol class="breadcrumb">
+                    <li>Influencer</li>
+                    <li>Detail</li>
+                </ol>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label class="cpnm">{{ campaign_detail.name }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <button onclick="onback_to_campaign_detail()" type="button" class="btn btn-info" style="float:right;margin-top: 6px">Back to campaign detail page</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-9">
+                <div class="btn-group spc_div_inf_li">
+                    {% for item in selected_influencers %}
+                        <button onclick="onclick_influencer_handle('{{ item.id }}')" title="{{ item.name }}" type="button" class="btn btn-info tmp_but_handle">{{ item.name }}</button>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+        {% if influener_ig_deatil == -1 %}
+            <div class="error-page">
+            <h2 class="headline text-yellow" style="font-size: 60px"> Error</h2>
+            <div class="error-content">
+                <h3><i class="fa fa-warning text-yellow"></i> Oops! Handle not found.</h3>
+                <p>
+                We could not find the handle you were looking for.
+                Meanwhile, you may <a href="/">return to dashboard</a> or find another in navigation above
+                </p>
+            </div>
+            </div>
+        {% else %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label class="cpnm">{{ influener_ig_deatil.username }}</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <button onclick="onclick_accept_influencer()" type="button" class="btn btn-info" style="float:right;margin-top: 6px">ACCEPT INFLUENCER</button>
+                                <button onclick="onclick_reject_influencer()" type="button" class="btn btn-info" style="float:right;margin-top: 6px;margin-right: 5px">REJECT INFLUENCER</button>
+                                <button onclick="onclick_export_pdf()" type="button" class="btn btn-info" style="float:right;margin-top: 6px;margin-right: 5px">EXPORT PDF</button>
+                                <a download="" style="display: none" id="influencer_pdf" href=""></a>
+                                <button onclick="onclick_export_png()" type="button" class="btn btn-info" style="float:right;margin-top: 6px;margin-right: 5px">EXPORT PNG</button>
+                                <a download="" style="display: none" id="influencer_png" href=""></a>
+                            </div>
+                     </div>
+                </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        {% if influener_ig_deatil.profile_picture_url %}
+                                            <img src="{{ influener_ig_deatil.profile_picture_url }}" style="width: 100%">
+                                        {% else %}
+                                            <img src="" style="width: 100%;height: 250px">
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <span>{{ influener_ig_deatil.biography }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-7">
+                                <p>Campaign write up</p>
+                                <textarea class="form-control form-control_c" id="cmp_wrt" style="height: 250px">{{ influencer_campaignwriteup }}</textarea>
+                            </div>
+                        </div>
+                         <div class="row">
+                             <div class="col-sm-12">
+                                 <button onclick="onclick_update_inf_campaignwriteup()" type="button" class="btn btn-info" style="float:right;margin-top: 10px;">Update Campaign Write Up</button>
+                             </div>
+                         </div>
+                </div>
+            </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5"></div>
+                <div class="col-sm-7">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p>Real name</p>
+                                <input type="text" class="form-control form-control_c" id="inf_rel_name" value="{{ influener_deatil.real_name }}" placeholder="">
+                            </div>
+                            <div class="col-sm-6">
+                                <p>Country name</p>
+                                <select class="form-control form-control_c" name="inf_cn_code" id="inf_cn_code">
+                                    {% for item in geography %}
+                                        {% if item.id in influener_deatil.origin_cn %}
+                                            <option selected value="{{ item.id }}">{{ item.name }}</option>
+                                        {% else %}
+                                            <option value="{{ item.id }}">{{ item.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button onclick="onclick_update_inf_profile()" type="button" class="btn btn-info" style="float:right;margin-top: 10px;margin-bottom: 10px">Update profile</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <p>YouTube Videos</p>
+                                <input type="number" class="form-control form-control_c" id="inf_cam_ytb" value="{{ influencer_content.inf_cam_ytb }}" placeholder="">
+                            </div>
+                            <div class="col-sm-4">
+                                <p>Instagram Posts</p>
+                                <input type="number" class="form-control form-control_c" id="inf_cam_insp" value="{{ influencer_content.inf_cam_insp }}" placeholder="">
+                            </div>
+                            <div class="col-sm-4">
+                                <p>Instagram Stories</p>
+                                <input type="number" class="form-control form-control_c" id="inf_cam_inss" value="{{ influencer_content.inf_cam_inss }}" placeholder="">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button onclick="onclick_update_inf_content()" type="button" class="btn btn-info" style="float:right;margin-top: 10px;margin-bottom: 10px">Update content</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if analysis_able %}
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label class="cpnm">Metrics</label>
+                                </div>
+                                <div class="col-sm-8">
+                                    <label class="cpnm" style="float:right;">Influencer score is <button id="influencer_score" style="margin-bottom: 5px;" type="button" class="btn btn-info">{{ metrics.influencer_score }}</button></label>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-bordered cutable" id="metrics_table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th style="width: 30%">Name</th>
+                            <th style="width: 40%">Calculated Value</th>
+                            <th style="width: 40%">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in metrics.metrics_table %}
+                            <tr id="metrics_row_{{ row.id }}">
+                                <td>{{ row.id }}</td>
+                                <td>{{ row.name }}</td>
+                                <td>{{ row.calc_value }}</td>
+                                <td class="td_metrics">
+                                    <span class="metrics_name"> {{row.edited_value}} </span>
+                                    <select class="metrics_value" style="display: none;height: 22px">
+                                        {% for item in editable_scores_range %}
+                                            <option value="{{ item }}">{{ item }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <i class="fa fa-fw fa-pencil hand" style="float:right;" onclick="onedit_metrics_value({{ row.id }})"></i>
+                                    <i class="fa fa-fw fa-close hand" style="float:right;display: none" onclick="onclose_metrics_value({{ row.id }})"></i>
+                                    <i class="fa fa-fw fa-save hand" style="float:right;display: none" onclick="onsave_metrics_value({{ row.id }})"></i>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label class="cpnm">Negative keywords</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="cpnm">Sponsored keywords</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <table class="table table-bordered cutable" id="negative_keywords">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50%">Keyword</th>
+                                    <th style="width: 50%">Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for row in negative_keyword %}
+                                <tr>
+                                    <td>{{ row.keyword }}</td>
+                                    <td>{{ row.count }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-sm-6">
+                        <table class="table table-bordered cutable" id="ad_keywords">
+                            <thead>
+                                <tr>
+                                    <th>Keyword</th>
+                                    <th>Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in ad_keyword %}
+                                <tr>
+                                    <td>{{ row.keyword }}</td>
+                                    <td>{{ row.count }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 20px">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="cpnm">Recent posts</label>
+                        </div>
+                    </div>
+                </div>
+                {% for row in recent_posts %}
+                    <div class="row" style="margin-bottom: 50px">
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-7">
+                                        {% if row.fs.media_type == 'IMAGE' %}
+                                        <img src="{{ row.fs.media_url }}" style="width: 100%">
+                                        {% elif row.fs.media_type == 'VIDEO' %}
+                                            <iframe style="width: 100%;height: 350px" src="{{ row.fs.media_url }}" frameborder="0"></iframe>
+                                        {% else %}
+                                            <span></span>
+                                        {% endif %}
+                                        <span class="post_title">{{ row.fs.caption }}</span>
+                                        <br>
+                                        <i class="fa fa-comments-o margin-r-5"> comments {{ row.fs.comments_count }}</i>
+                                        <i class="fa fa-thumbs-o-up margin-r-5"> likes {{ row.fs.like_count }}</i>
+                                        <i class="fa fa-cog margin-r-5"> engagement {{ row.fs.engagement_rate }}</i>
+
+                                        <br>
+                                        {% if row.fs.comments %}
+                                            <select style="height: 22px;margin-top: 5px; width: 100%">
+                                                {% for item in row.fs.comments %}
+                                                    <option>{{item.text}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        {% endif %}
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-7">
+                                {% if row.sc %}
+                                        {% if row.sc.media_type == 'IMAGE' %}
+                                            <img src="{{ row.sc.media_url }}" style="width: 100%">
+                                        {% elif row.sc.media_type == 'VIDEO' %}
+                                            <iframe style="width: 100%;height: 350px" src="{{ row.sc.media_url }}" frameborder="0"></iframe>
+                                        {% else %}
+                                            <span></span>
+                                        {% endif %}
+                                        <span class="post_title">{{ row.sc.caption }}</span>
+                                        <br>
+                                        <i class="fa fa-comments-o margin-r-5"> comments {{ row.sc.comments_count }}</i>
+                                        <i class="fa fa-thumbs-o-up margin-r-5"> likes {{ row.sc.like_count }}</i>
+                                        <i class="fa fa-cog margin-r-5"> engagement {{ row.sc.engagement_rate }}</i>
+                                        <br>
+                                        {% if row.sc.comments %}
+                                            <select style="height: 22px;margin-top: 5px; width: 100%;">
+                                                {% for item in row.sc.comments %}
+                                                    <option>{{item.text}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        {% endif %}
+                                {% endif %}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                    <div class="error-page">
+                    <h2 class="headline text-yellow" style="font-size: 60px"> Error </h2>
+                    <div class="error-content">
+                        <h3><i class="fa fa-warning text-yellow"></i> Oops! Can not analyze.</h3>
+                        <p>
+                        We could not analyze the handle you were looking for now. Please contact with administrator
+                        </p>
+                    </div>
+                    </div>
+            {% endif %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-4">
+                            </div>
+                            <div class="col-sm-8">
+                                <button onclick="onclick_accept_influencer()" type="button" class="btn btn-info" style="float:right;margin-top: 6px">ACCEPT INFLUENCER</button>
+                                <button onclick="onclick_reject_influencer()" type="button" class="btn btn-info" style="float:right;margin-top: 6px;margin-right: 5px">REJECT INFLUENCER</button>
+                            </div>
+                     </div>
+                </div>
+                </div>
+            </div>
+        {% endif %}
+    </section>
+
+    <script>
+
+    let campaign_id = '{{ campaign_id }}';
+    let cur_influencer_id = '{{ influencer_id }}';
+    let influener_ig_id = '{{ influener_ig_deatil.ig_id }}';
+    let analylsable = 0;
+    {% if analysis_able %}
+        analylsable = 1;
+    {% endif %}
+    $(document).ready(function () {
+        $('#negative_keywords').DataTable({
+            dom: '<"top"R<"clear">>rt<"bottom"lip<"clear">>',
+            pagingType: "full_numbers",
+            scrollX: true,
+            order: [0, 'asc'],
+        });
+
+        $('#ad_keywords').DataTable({
+            dom: '<"top"R<"clear">>rt<"bottom"lip<"clear">>',
+            pagingType: "full_numbers",
+            scrollX: true,
+            order: [0, 'asc'],
+        });
+
+        $('#metrics_table').DataTable({
+            dom: '<"top"R<"clear">>rt<"bottom"lip<"clear">>',
+            lengthMenu: [[20, 50, 100], [20, 50, 100]],
+            pagingType: "full_numbers",
+            scrollX: true,
+            columnDefs: [
+                {targets:0, visible: false}
+            ],
+        });
+    });
+
+    function onclick_influencer_handle(influencer_id) {
+        window.location.href = '/campaign_detail/' + campaign_id + '/influencer_detail/' + influencer_id;
+    }
+
+    function onback_to_campaign_detail() {
+        window.location.href = '/campaign_detail/' + campaign_id;
+    }
+
+    function onclick_accept_influencer() {
+        let param = {};
+        param['campaign_id'] = campaign_id;
+        param['influencer_id'] = cur_influencer_id;
+        $.ajax({
+            type: 'POST',
+            url: '/accept_influencer',
+            data: param,
+            success: function (res) {
+                if (res === 'success') {
+                    alert ('SUCCESS');
+                } else {
+                    alert ('FAILURE');
+                }
+            }
+        });
+    }
+
+    function onclick_reject_influencer() {
+        let param = {};
+        param['campaign_id'] = campaign_id;
+        param['influencer_id'] = cur_influencer_id;
+        $.ajax({
+            type: 'POST',
+            url: '/reject_influencer',
+            data: param,
+            success: function (res) {
+                if (res === 'success') {
+                    alert ('SUCCESS');
+                } else {
+                    alert ('FAILURE');
+                }
+            }
+        });
+    }
+
+    function onclick_export_pdf() {
+        if (analylsable===0) {
+            alert('Can not analyze');return;
+        }
+        let param = {};
+        param['campaign_id'] = campaign_id;
+        param['influencer_id'] = cur_influencer_id;
+        param['influener_ig_id'] = influener_ig_id;
+
+        $.ajax({
+            type: 'POST',
+            url: '/export_pdf',
+            data: param,
+            success: function (res) {
+                var download_pdf2_obj = document.getElementById("influencer_pdf");
+                download_pdf2_obj.href = '/' + res;
+                document.getElementById("influencer_pdf").click();
+            }
+        });
+    }
+
+    function onclick_export_png() {
+        if (analylsable===0) {
+            alert('Can not analyze');return;
+        }
+        let param = {};
+        param['campaign_id'] = campaign_id;
+        param['influencer_id'] = cur_influencer_id;
+        param['influencer_ig_id'] = influener_ig_id;
+
+        $.ajax({
+            type: 'POST',
+            url: '/export_png',
+            data: param,
+            success: function (res) {
+                var download_pdf2_obj = document.getElementById("influencer_png");
+                download_pdf2_obj.href = '/' + res;
+                document.getElementById("influencer_png").click();
+            }
+        });
+    }
+
+    function onedit_metrics_value(id) {
+        $('#metrics_table #metrics_row_' + id + ' .metrics_value').css('display', 'inline-block');
+        $('#metrics_table #metrics_row_' + id + ' .td_metrics .fa-close').css('display', 'inline-block');
+        $('#metrics_table #metrics_row_' + id + ' .td_metrics .fa-save').css('display', 'inline-block');
+        $('#metrics_table #metrics_row_' + id + ' .td_metrics .fa-pencil').css('display', 'none');
+        $('#metrics_table #metrics_row_' + id + ' .metrics_name').css('display', 'none');
+    }
+
+    function onclose_metrics_value(id) {
+        $('#metrics_table #metrics_row_' + id + ' .metrics_value').css('display', 'none');
+        $('#metrics_table #metrics_row_' + id + ' .td_metrics .fa-close').css('display', 'none');
+        $('#metrics_table #metrics_row_' + id + ' .td_metrics .fa-save').css('display', 'none');
+        $('#metrics_table #metrics_row_' + id + ' .td_metrics .fa-pencil').css('display', 'inline-block');
+        $('#metrics_table #metrics_row_' + id + ' .metrics_name').css('display', 'inline-block');
+    }
+
+    function onclick_update_inf_profile() {
+        let param = {};
+        param.influencer_id = cur_influencer_id;
+        param.cn_code = $('#inf_cn_code').val();
+        param.rel_name = $('#inf_rel_name').val();
+        $.ajax({
+            type: 'POST',
+            url: '/edit_influencer_additional',
+            data: param,
+            success: function (res) {
+                if (res === 'success') {
+                    alert ('SUCCESS');
+                } else {
+                    alert ('FAILURE');
+                }
+            }
+        });
+    }
+
+    function onclick_update_inf_content() {
+        let param = {};
+        param.influencer_id = cur_influencer_id;
+        param.campaign_id = campaign_id;
+        param.inf_cam_ytb = $('#inf_cam_ytb').val();
+        param.inf_cam_insp = $('#inf_cam_insp').val();
+        param.inf_cam_inss = $('#inf_cam_inss').val();
+        $.ajax({
+            type: 'POST',
+            url: '/edit_influencer_content',
+            data: param,
+            success: function (res) {
+                if (res === 'success') {
+                    alert ('SUCCESS');
+                } else {
+                    alert ('FAILURE');
+                }
+            }
+        });
+    }
+
+    function onclick_update_inf_campaignwriteup() {
+        let param = {};
+        param.campaign_id = campaign_id;
+        param.campaign_writeup = $('#cmp_wrt').val();
+        $.ajax({
+            type: 'POST',
+            url: '/edit_influencer_campaign_writeup',
+            data: param,
+            success: function (res) {
+                if (res === 'success') {
+                    alert ('SUCCESS');
+                } else {
+                    alert ('FAILURE');
+                }
+            }
+        });
+
+    }
+
+    function onsave_metrics_value(id) {
+        let param = {};
+        param.influencer_id = cur_influencer_id;
+        param.campaign_id = campaign_id;
+        param.metrics_index = id;
+        let entry_str = $('#metrics_table #metrics_row_' + id + ' .metrics_value').val();
+        let entry = parseFloat(entry_str);
+
+        if (isNaN(entry)) {
+            alert('Please input number type.');
+            return;
+        }
+        if (entry > 5 || entry < -5) {
+            alert('Entry should be between -5 and 5.');
+            return;
+        }
+        param.value = entry;
+        $.ajax({
+            type: 'POST',
+            url: '/edit_influencer_metrics',
+            data: param,
+            success: function (res) {
+                if (res === 'success') {
+                    alert ('SUCCESS');
+                    onclose_metrics_value(id);
+                    $('#metrics_table #metrics_row_' + id + ' .metrics_name').text(entry);
+                    $.get('/get_influencer_score', {campaign_id: campaign_id, influencer_id: cur_influencer_id}, function (data) {
+                        $('#influencer_score').text(data);
+                    })
+                } else if (res === 'duplicate') {
+                    alert('Duplicated.')
+                }
+                else {
+                    alert ('FAILURE');
+                }
+            }
+        });
+    }
+    </script>
+{% endblock %}
+

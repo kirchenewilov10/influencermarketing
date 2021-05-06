@@ -1,0 +1,16 @@
+{% extends 'bootstrap5/bootstrap5.html' %}
+
+{% load bootstrap5 %}
+
+{% block bootstrap5_content %}
+    <div class="container">
+        <h1>{% block title %}EAEO{% endblock %}</h1>
+
+        {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
+
+        {% block content %}
+            <a style="color: chocolate;text-decoration: none;" href="{% url "social:begin" "facebook" %}">Sign up with Facebook</a>
+        {% endblock %}
+    </div>
+
+{% endblock %}

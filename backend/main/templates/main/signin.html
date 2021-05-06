@@ -1,0 +1,34 @@
+{% extends 'bootstrap5/bootstrap5.html' %}
+
+{% load bootstrap5 %}
+
+{% block bootstrap5_content %}
+    <div class="container">
+        <h1>{% block title %}EAEO{% endblock %}</h1>
+
+        {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
+
+        {% block content %}
+            <form method="post">
+                {% csrf_token %}
+                <label style="display: block;font-weight: bold;margin-bottom: 10px">Email</label>
+                <input style="margin-bottom: 10px" type="text" name="email" id="email" placeholder="email">
+
+                <label style="display: block;font-weight: bold;margin-bottom: 10px">Password</label>
+                <input style="margin-bottom: 10px" type="text" name="password" id="password" placeholder="password">
+
+                <label style="color: chocolate;display: block;margin-bottom: 10px"> {{ text }} </label>
+
+                <button style="display: block;color: #fff;
+                    background-color: #3c8dbc;
+                    border-radius: 3px;
+                    border-color: #367fa9;
+                    border: 1px solid transparent;margin-bottom: 10px" type="submit">Sign in
+                </button>
+            </form>
+
+            <a style="color: chocolate;text-decoration: none;" href="{% url "social:begin" "facebook" %}">Sign in with Facebook</a>
+        {% endblock %}
+    </div>
+
+{% endblock %}

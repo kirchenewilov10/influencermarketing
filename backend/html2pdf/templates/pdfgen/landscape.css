@@ -1,0 +1,7 @@
+@frame content_frame {
+	left: {{ margin_left }}cm ;
+	right: {{ margin_right }}cm ;
+	top: {{ margin_top }}cm;
+ 	width: {{ margin_width }}cm;
+	height: {{ margin_height }}cm;
+}

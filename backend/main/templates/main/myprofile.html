@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="content">
+    <div class="row">
+        <div>
+            <ol class="breadcrumb">
+                <li>Profile</li>
+                <li></li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="">Is superuser: </label>
+                        <label class="">
+                            {% if is_superuser %}
+                                Yes
+                            {% else %}
+                                No
+                            {% endif %}
+                            </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="">Username: </label>
+                        <label class="">{{ username }}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="">User class: </label>
+                        <label class="">{{ userclass }}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,316 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="content">
+        <div class="row">
+            <div>
+                <ol class="breadcrumb">
+                    <li>Influencer</li>
+                    <li>Detail</li>
+                </ol>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="cpnm">{{ influencer_basic.handle }}</label>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label>Real Name</label>
+                            <input type="text" class="form-control form-control_c" id="inf_rel_name" value="{{ influencer_basic.name }}" placeholder="">
+                        </div>
+                        <div class="col-sm-3">
+                            <label>Country Name</label>
+                            <select class="form-control form-control_c" name="inf_cn_code" id="inf_cn_code">
+                                {% for item in geography %}
+                                    {% if item.id in influencer_basic.origin_cn %}
+                                        <option selected value="{{ item.id }}">{{ item.name }}</option>
+                                    {% else %}
+                                        <option value="{{ item.id }}">{{ item.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>API connection status</label><br>
+                            <label style="margin-top: 5px;">{{ influencer_basic.connect_stat }}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row"><div class="col-sm-6">
+                        <button onclick="onclick_update_inf_profile()" type="button" class="btn btn-info" style="float: right">Update profile</button>
+                    </div></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="cpnm">Metrics</label>
+                </div>
+            </div>
+        </div>
+        <table class="table table-bordered cutable" id="metrics_table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th style="width: 30%">Name</th>
+                    <th style="width: 40%">Calculated Value</th>
+                    <th style="width: 40%">Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in metrics_table %}
+                    <tr id="metrics_row_{{ row.id }}">
+                        <td>{{ row.id }}</td>
+                        <td>{{ row.name }}</td>
+                        <td>---</td>
+                        <td>---</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="row" style="margin-top: 20px">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label class="cpnm">Negative keywords</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="cpnm">Sponsored keywords</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <table class="table table-bordered cutable" id="negative_keywords">
+                    <thead>
+                        <tr>
+                            <th style="width: 50%">Keyword</th>
+                            <th style="width: 50%">Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in negative_keyword %}
+                        <tr>
+                            <td>{{ row.keyword }}</td>
+                            <td>{{ row.count }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-6">
+                <table class="table table-bordered cutable" id="ad_keywords">
+                    <thead>
+                        <tr>
+                            <th>Keyword</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in ad_keyword %}
+                        <tr>
+                            <td>{{ row.text }}</td>
+                            <td>---</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 20px">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label class="cpnm">Audience Gender&Age</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="cpnm">Audience Country</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <table class="table table-bordered cutable" id="audience_gender_age">
+                    <thead>
+                        <tr>
+                            <th style="width: 50%">Gender/Age</th>
+                            <th style="width: 50%">Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in audience_gender_age %}
+                        <tr>
+                            <td>{{ row.key }}</td>
+                            <td>{{ row.value }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-6">
+                <table class="table table-bordered cutable" id="audience_country">
+                    <thead>
+                        <tr>
+                            <th>Country</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in audience_country %}
+                        <tr>
+                            <td>{{ row.key }}</td>
+                            <td>{{ row.value }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <div class="row" style="margin-top: 20px">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <label class="cpnm">Campaigns</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <label class="cpnm">Recent posts</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-8">
+            <table class="table table-bordered cutable" id="campaign_table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Campaign Name</th>
+                        <th>Brand</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for row in campaigns %}
+                    <tr>
+                        <td>{{ row.id }}</td>
+                        <td><a href="/campaign_detail/{{ row.id }}">{{ row.name }}</a></td>
+                        <td>{{ row.brand.name }}</td>
+                        <td>{{ row.status }}</td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-2" style="height: 350px; overflow-y: overlay">
+            {% for row in recent_posts %}
+                <div class="row" style="margin-bottom: 50px">
+                    <div class="col-sm-12">
+                        {% if row.media_type == 'IMAGE' %}
+                        <img src="{{ row.media_url }}" style="width: 100%">
+                        {% elif row.media_type == 'VIDEO' %}
+                            <iframe style="width: 100%;height: 350px" src="{{ row.media_url }}" frameborder="0"></iframe>
+                        {% else %}
+                            <span></span>
+                        {% endif %}
+                        <span class="post_title">{{ row.caption }}</span>
+                        <br>
+                        <i class="fa fa-comments-o margin-r-5"> comments {{ row.comments_count }}</i>
+                        <i class="fa fa-thumbs-o-up margin-r-5"> likes {{ row.like_count }}</i>
+                        <i class="fa fa-cog margin-r-5"> engagement {{ row.engagement_rate }}</i>
+
+                        <br>
+                        {% if row.comments %}
+                            <select style="height: 22px;margin-top: 5px; width: 100%">
+                                {% for item in row.comments %}
+                                    <option>{{item.text}}</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    </section>
+
+    <script>
+        let cur_influencer_id = '{{ influencer_id }}';
+        $(document).ready(function () {
+            $('#metrics_table').DataTable({
+                dom: '<"top"R<"clear">>rt<"bottom"lip<"clear">>',
+                lengthMenu: [[20, 50, 100], [20, 50, 100]],
+                pagingType: "full_numbers",
+                scrollX: true,
+                columnDefs: [
+                    {targets:0, visible: false}
+                ],
+            });
+            $('#negative_keywords').DataTable({
+                dom: '<"top"R<"clear">>rt<"bottom"lip<"clear">>',
+                pagingType: "full_numbers",
+                scrollX: true,
+                order: [0, 'asc'],
+            });
+
+            $('#audience_country').DataTable({
+                dom: '<"top"R<"clear">>rt<"bottom"lip<"clear">>',
+                pagingType: "full_numbers",
+                scrollX: true,
+                order: [0, 'asc'],
+            });
+            $('#ad_keywords').DataTable({
+                dom: '<"top"R<"clear">>rt<"bottom"lip<"clear">>',
+                pagingType: "full_numbers",
+                scrollX: true,
+                order: [0, 'asc'],
+            });
+            $('#audience_gender_age').DataTable({
+                dom: '<"top"R<"clear">>rt<"bottom"lip<"clear">>',
+                pagingType: "full_numbers",
+                scrollX: true,
+                order: [0, 'asc'],
+            });
+            $('#campaign_table').DataTable({
+                dom: '<"top"R<"clear">>rt<"bottom"lip<"clear">>',
+                pagingType: "full_numbers",
+                scrollX: true,
+                columnDefs: [
+                    {targets:0, visible: false}
+                ],
+            });
+        });
+
+        function onclick_update_inf_profile() {
+            let param = {};
+            param.influencer_id = cur_influencer_id;
+            param.cn_code = $('#inf_cn_code').val();
+            param.rel_name = $('#inf_rel_name').val();
+            $.ajax({
+                type: 'POST',
+                url: '/edit_influencer_additional',
+                data: param,
+                success: function (res) {
+                    if (res === 'success') {
+                        alert ('SUCCESS');
+                    } else {
+                        alert ('FAILURE');
+                    }
+                }
+            });
+        }
+    </script>
+{% endblock %}

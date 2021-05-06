@@ -1,0 +1,351 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="content">
+        <div class="row">
+            <div>
+                <ol class="breadcrumb">
+                    <li>Campaign</li>
+                    <li>Detail</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <form class="">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label class="cpnm">{{ campaign_detail.name }}</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <i class="fa fa-lock hand" style="float: right;font-size: 23px;" onclick="onclick_campaign_edit_lock()"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 100px">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label>Brand</label>
+                                <select class="form-control form-control_c" id="brand_select">
+                                    {% for item in brand %}
+                                        {% if item.id == campaign_detail.brand_id %}
+                                            <option selected value="{{ item.id }}">{{ item.name }}</option>
+                                        {% else %}
+                                            <option value="{{ item.id }}">{{ item.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <label>Gender</label>
+                                <select class="form-control form-control_c" id="cp_gender">
+                                    {% for item in gender %}
+                                        {% if item.id == campaign_detail.gender %}
+                                            <option selected value="{{ item.id }}">{{ item.name }}</option>
+                                        {% else %}
+                                            <option value="{{ item.id }}">{{ item.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <label>KPI</label>
+                                <select class="form-control form-control_c" id="cp_kpi">
+                                    {% for item in kpi %}
+                                        {% if item.id == campaign_detail.kpi %}
+                                            <option selected value="{{ item.id }}">{{ item.name }}</option>
+                                        {% else %}
+                                            <option value="{{ item.id }}">{{ item.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <label>Geography</label>
+                                <select class="form-control form-control_c" multiple name="geography_" id="geography_">
+                                    {% for item in geography %}
+                                        {% if item.id in campaign_detail.location_id %}
+                                            <option selected value="{{ item.id }}">{{ item.name }}</option>
+                                        {% else %}
+                                            <option value="{{ item.id }}">{{ item.name }}</option>
+                                        {% endif %}
+
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <label>Age</label>
+                                <select class="form-control form-control_c" multiple name="age_" id="age_">
+                                    {% for item in age %}
+                                        {% if item in campaign_detail.age %}
+                                            <option selected value="{{ item }}">{{ item }}</option>
+                                        {% else %}
+                                            <option value="{{ item }}">{{ item }}</option>
+                                        {% endif %}
+
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <label>Safety Score</label>
+                                <select class="form-control form-control_c" id="safety_score_">
+                                    {% for item in safety_score %}
+                                        {% if item.id == campaign_detail.safety_score %}
+                                            <option selected value="{{ item.id }}">{{ item.name }}</option>
+                                        {% else %}
+                                            <option value="{{ item.id }}">{{ item.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-6 form-group">
+                                <label>Competitive Brands</label>
+                                <select class="form-control form-control_c select2" multiple="multiple" style="width: 100%;" id="cb_select">
+                                    {% for item in brand %}
+                                        {% if item.id in campaign_detail.competitors %}
+                                            <option selected value="{{ item.id }}">@{{ item.name }}</option>
+                                        {% else %}
+                                            <option value="{{ item.id }}">@{{ item.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label>Influencer Handles</label>
+                                <select class="form-control form-control_c select2" multiple="multiple" style="width: 100%;" id="ih_select">
+                                    {% for item in influencers %}
+                                        {% if item.id in campaign_detail.influencers %}
+                                            <option selected value="{{ item.id }}">@{{ item.name }}</option>
+                                        {% else %}
+                                            <option value="{{ item.id }}">@{{ item.name }}</option>
+                                        {% endif %}
+
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 100px">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label class="cpnm">Selected influencers</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <button onclick="onmove_to_influencer_selection()" type="button" style="float: right" class="btn btn-info">Selection</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table class="table table-bordered cutable" id="influencer_table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Influencer Name</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for row in selected_influencers %}
+                <tr id="influencer_row_{{ row.id }}">
+                    <td>{{ row.id }}</td>
+                    <td>{{ row.name }}<i class="fa fa-fw fa-pencil" style="float:right;"></i></td>
+                    <td class="td_em">
+                        <span class="inf_em_sp">{{ row.email }}</span>
+                        <input type="text" class="inf_em" style="display: none;height: 22px">
+                        <i class="fa fa-fw fa-pencil hand" style="float:right;" onclick="onedit_influencer_email('{{ row.id }}')"></i>
+                        <i class="fa fa-fw fa-close hand" style="float:right;display: none" onclick="onclose_influencer_email('{{ row.id }}')"></i>
+                        <i class="fa fa-fw fa-save hand" style="float:right;display: none" onclick="onsave_influencer_email('{{ row.id }}')"></i>
+                    </td>
+                    <td class="td_ar_status">
+                        <span class="inf_ar_status_sp">
+                            {% if row.acc_rej_stat == 0 %}
+                                REJECTED
+                            {% elif row.acc_rej_stat == 1 %}
+                                ACCEPTED
+                            {% elif row.acc_rej_stat == 2 %}
+                                CONNECTED
+                            {% elif row.acc_rej_stat == 3 %}
+                                INVITED
+                            {% elif row.acc_rej_stat == 4 %}
+                                ANALYSED
+                            {% else %}
+                                UNKNOWN
+                            {% endif %}
+                        </span>
+                        <select class="inf_ar_status" style="display: none;height: 22px">
+                            <option value="1">ACCEPTED</option>
+                            <option value="0">REJECTED</option>
+                        </select>
+                        <i class="fa fa-fw fa-pencil hand" style="float:right;" onclick="onedit_influencer_ar_status('{{ row.id }}')"></i>
+                        <i class="fa fa-fw fa-close hand" style="float:right;display: none" onclick="onclose_influencer_ar_status('{{ row.id }}')"></i>
+                        <i class="fa fa-fw fa-save hand" style="float:right;display: none" onclick="onsave_influencer_ar_status('{{ row.id }}')"></i>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="row" style="margin-top: 100px">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label class="cpnm">Campaign Metrics</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <button onclick="" type="button" style="float: right" class="btn btn-info">Export Metrics</button>
+                            <button onclick="" type="button" style="float: right;margin-right: 5px" class="btn btn-info">View Metrics</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="table table-bordered cutable" id="metrics_table">
+            <thead>
+                <tr>
+                    <th>Header</th>
+                    <th>Header</th>
+                    <th>Header</th>
+                    <th>Header</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>----</td><td>----</td><td>----</td><td>----</td></tr>
+                <tr><td>----</td><td>----</td><td>----</td><td>----</td></tr>
+                <tr><td>----</td><td>----</td><td>----</td><td>----</td></tr>
+                <tr><td>----</td><td>----</td><td>----</td><td>----</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <script>
+    var influencer_ids = [];
+    var campaign_id = '{{ campaign_id }}';
+
+    $(document).ready(function () {
+        {% if selected_influencers != None %}
+            {% for item in selected_influencers %}
+                influencer_ids.push('{{ item.id }}');
+            {% endfor %}
+        {% endif %}
+
+        $('.select2').select2();
+        $('#influencer_table').DataTable({
+            dom: '<"top"R<"clear">>rt<"bottom"lip<"clear">>',
+            pagingType: "full_numbers",
+            scrollX: true,
+            columnDefs: [
+                {targets:0, visible: false}
+            ],
+        });
+        $('#metrics_table').DataTable({
+            dom: '<"top"R<"clear">>rt<"bottom"lip<"clear">>',
+            pagingType: "full_numbers",
+            scrollX: true,
+        });
+
+    });
+
+    function onclick_campaign_edit_lock(){
+
+    }
+
+    function onedit_influencer_ar_status(influencer_id) {
+        $('#influencer_table #influencer_row_' + influencer_id + ' .inf_ar_status').css('display', 'inline-block');
+        $('#influencer_table #influencer_row_' + influencer_id + ' .td_ar_status .fa-close').css('display', 'inline-block');
+        $('#influencer_table #influencer_row_' + influencer_id + ' .td_ar_status .fa-save').css('display', 'inline-block');
+        $('#influencer_table #influencer_row_' + influencer_id + ' .td_ar_status .fa-pencil').css('display', 'none');
+        $('#influencer_table #influencer_row_' + influencer_id + ' .inf_ar_status_sp').css('display', 'none');
+    }
+
+    function onclose_influencer_ar_status(influencer_id) {
+        $('#influencer_table #influencer_row_' + influencer_id + ' .inf_ar_status').css('display', 'none');
+        $('#influencer_table #influencer_row_' + influencer_id + ' .td_ar_status .fa-close').css('display', 'none');
+        $('#influencer_table #influencer_row_' + influencer_id + ' .td_ar_status .fa-save').css('display', 'none');
+        $('#influencer_table #influencer_row_' + influencer_id + ' .td_ar_status .fa-pencil').css('display', 'inline-block');
+        $('#influencer_table #influencer_row_' + influencer_id + ' .inf_ar_status_sp').css('display', 'inline-block');
+    }
+
+    function onsave_influencer_ar_status(influencer_id) {
+        let param = {};
+        param.influencer_id = influencer_id;
+        param.campaign_id = campaign_id;
+        param.value = parseInt($('#influencer_table #influencer_row_' + influencer_id + ' .inf_ar_status').val());
+        $.ajax({
+            type: 'POST',
+            url: '/edit_influencer_ar',
+            data: param,
+            success: function (res) {
+                if (res === 'success') {
+                    alert ('SUCCESS');
+                    window.location.reload();
+                } else {
+                    alert ('FAILURE');
+                }
+            }
+        })
+    }
+
+    function onedit_influencer_email(influencer_id) {
+        $('#influencer_table #influencer_row_' + influencer_id + ' .inf_em').css('display', 'inline-block');
+        $('#influencer_table #influencer_row_' + influencer_id + ' .td_em .fa-close').css('display', 'inline-block');
+        $('#influencer_table #influencer_row_' + influencer_id + ' .td_em .fa-save').css('display', 'inline-block');
+        $('#influencer_table #influencer_row_' + influencer_id + ' .td_em .fa-pencil').css('display', 'none');
+        $('#influencer_table #influencer_row_' + influencer_id + ' .inf_em_sp').css('display', 'none');
+    }
+
+    function onclose_influencer_email(influencer_id) {
+        $('#influencer_table #influencer_row_' + influencer_id + ' .inf_em').css('display', 'none');
+        $('#influencer_table #influencer_row_' + influencer_id + ' .td_em .fa-close').css('display', 'none');
+        $('#influencer_table #influencer_row_' + influencer_id + ' .td_em .fa-save').css('display', 'none');
+        $('#influencer_table #influencer_row_' + influencer_id + ' .td_em .fa-pencil').css('display', 'inline-block');
+        $('#influencer_table #influencer_row_' + influencer_id + ' .inf_em_sp').css('display', 'inline-block');
+    }
+
+    function onsave_influencer_email(influencer_id) {
+        let param = {};
+        param.influencer_id = influencer_id;
+        param.text = $('#influencer_table #influencer_row_' + influencer_id + ' .inf_em').val();
+        $.ajax({
+            type: 'POST',
+            url: '/edit_influencer_email',
+            data: param,
+            success: function (res) {
+                if (res === 'success') {
+                    alert ('SUCCESS');
+                    window.location.reload();
+                } else {
+                    alert ('FAILURE');
+                }
+            }
+        })
+    }
+
+    function onmove_to_influencer_selection() {
+        if (influencer_ids.length === 0) {
+            alert("There aren't any selected influencers.");return;
+        }
+        let first_id = influencer_ids[0];
+        window.location.href = '/campaign_detail/' + campaign_id + '/influencer_detail/' + first_id;
+    }
+    </script>
+{% endblock %}
+

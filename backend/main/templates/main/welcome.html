@@ -1,0 +1,18 @@
+{% extends 'bootstrap5/bootstrap5.html' %}
+
+{% load bootstrap5 %}
+
+{% block bootstrap5_content %}
+    <div class="container">
+        <h1>{% block title %}EAEO{% endblock %}</h1>
+
+        {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
+
+        {% block content %}
+            <a href="/sign-up" style="color: chocolate;text-decoration: none;margin-right: 10px;">Sign Up</a>
+            <a href="/influencer-sign-up" style="color: chocolate;text-decoration: none;margin-right: 50px;">Influencer Sign Up</a>
+            <a href="/sign-in" style="color: chocolate;text-decoration: none;">Sign in</a>
+        {% endblock %}
+    </div>
+
+{% endblock %}

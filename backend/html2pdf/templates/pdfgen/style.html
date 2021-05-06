@@ -1,0 +1,15 @@
+<style type="text/css">
+    @page {
+        size: {{pagesize}};
+        background-image: url({{background_path}});
+        {% if page_orientation == 'landscape' %} {% include 'pdfgen/landscape.css' %} {% endif %}
+        {% if page_orientation == 'portrait' %} {% include 'pdfgen/portrait.css' %} {% endif %}
+    }
+    @font-face {
+        font-family: Roboto;
+        src: url({{font_path}});
+    }
+    body {
+        font-family: "Roboto", sans-serif;
+    }
+</style>

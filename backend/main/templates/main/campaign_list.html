@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="content">
+        <div class="row">
+            <div>
+                <ol class="breadcrumb">
+                    <li>Campaign</li>
+                    <li>List</li>
+                </ol>
+            </div>
+        </div>
+        <!--
+        <div class="box box-info">
+        -->
+            <!--
+            <div class="box-header with-border">
+                <h3 class="box-title">Campaign list</h3>
+            </div>-->
+            <!--
+            <div class="box-body">
+            -->
+        <div class="row">
+            <div class="col-sm-12">
+                <button onclick="onclick_create_campaign()" type="button" style="float: right" class="btn btn-info">Create Campaign</button>
+            </div>
+        </div>
+                <table class="table table-bordered cutable" id="campaign_table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Campaign Name</th>
+                            <th>Brand</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in table_data %}
+                        <tr>
+                            <td>{{ row.id }}</td>
+                            <td><a href="/campaign_detail/{{ row.id }}">{{ row.name }}</a></td>
+                            <td>{{ row.brand.name }}</td>
+                            <td>{{ row.status }}</td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            <!--
+            </div>
+        </div>
+        -->
+    </section>
+    <script src="/static/eaeo/main.js"></script>
+    <script>
+    $(document).ready(function () {
+        $('#campaign_table').DataTable({
+            dom: '<"top"R<"clear">>rt<"bottom"lip<"clear">>',
+            pagingType: "full_numbers",
+            scrollX: true,
+            columnDefs: [
+                {targets:0, visible: false}
+            ],
+        });
+
+    });
+
+    </script>
+{% endblock %}
+

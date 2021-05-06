@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="content">
+        <div class="row">
+            <div>
+                <ol class="breadcrumb">
+                    <li>Brand</li>
+                    <li>List</li>
+                </ol>
+            </div>
+        </div>
+                <table class="table table-bordered cutable" id="brand_table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Brand Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in table_data %}
+                        <tr>
+                            <td>{{ row.id }}</td>
+                            <td><a href="/brand_detail/{{ row.id }}">{{ row.name }}</a></td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+    </section>
+
+    <script>
+    $(document).ready(function () {
+        $('#brand_table').DataTable({
+            dom: '<"top"R<"clear">>rt<"bottom"lip<"clear">>',
+            pagingType: "full_numbers",
+            scrollX: true,
+            columnDefs: [
+                {targets:0, visible: false}
+            ],
+        });
+
+    });
+
+    </script>
+{% endblock %}
+

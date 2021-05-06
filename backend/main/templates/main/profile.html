@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="content">
+    <p>
+        <a type="button" class="btn btn-primary"
+           href="{% url 'main:basic_data' account.instagram_business_account.id account.instagram_business_account.username %}"
+        >
+            Basic data
+        </a>
+    </p>
+    <p>
+        <a type="button" class="btn btn-primary"
+           href="{% url 'main:audience_gender_age' account.instagram_business_account.id %}"
+        >
+            Audience gender/age
+        </a>
+    </p>
+    <p>
+        <a type="button" class="btn btn-primary"
+           href="{% url 'main:audience_country' account.instagram_business_account.id %}"
+        >
+            Audience country
+        </a>
+    </p>
+    <p>
+        <a type="button" class="btn btn-primary"
+           href="{% url 'main:media' account.instagram_business_account.id %}"
+        >
+            Posts (50 recent)
+        </a>
+    </p>
+    <p>
+        <a type="button" class="btn btn-primary"
+           href="{% url 'main:comments' account.instagram_business_account.id %}"
+        >
+            Comments (to 50 recent posts)
+        </a>
+    </p>
+    <p>
+        <a type="button" class="btn btn-primary"
+           href="{% url 'main:impressions' account.instagram_business_account.id %}"
+        >
+            Total impressions by day
+        </a>
+    </p>
+    <p>
+        <a type="button" class="btn btn-primary"
+           href="{% url 'main:reach' account.instagram_business_account.id %}"
+        >
+            Total reach by day
+        </a>
+    </p>
+
+    <p>
+        vf: {{ vf }}
+    </p>
+    <p>
+        ff: {{ ff }}
+    </p>
+    <p>
+        cf: {{ cf }}
+    </p>
+    <p>
+        age_dmg_to_target: {{ age_dmg_to_target }}
+    </p>
+    <p>
+        gender_dmg_to_target: {{ gender_dmg_to_target }}
+    </p>
+    <p>
+        cn_dmg_to_target: {{ cn_dmg_to_target }}
+    </p>
+    <p>
+        er: {{ er }}
+    </p>
+    <p>
+        sf: {{ sf }}
+    </p>
+
+    </section>
+
+
+{% endblock %}
