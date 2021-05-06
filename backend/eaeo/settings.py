@@ -100,12 +100,12 @@ PRODUCTIONDB = 1
 if PRODUCTIONDB:
     DATABASES = {
         'default': {
-            'HOST': 'db-mysql-lon1-69602-do-user-8709659-0.b.db.ondigitalocean.com',
-            'PORT': '25060',
-            'NAME': 'defaultdb',
+            'HOST': '****',
+            'PORT': '****',
+            'NAME': '****',
             'ENGINE': 'django.db.backends.mysql',
             'USER': 'doadmin',
-            'PASSWORD': 'nki8r9sgz2cdnwve',
+            'PASSWORD': '****',
             'ATOMIC_REQUESTS': True,
         },
     }
@@ -173,8 +173,8 @@ AUTHENTICATION_BACKENDS = (
 
 # SOCIAL_AUTH_USER_MODEL = 'main.tbl_user'
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
-SOCIAL_AUTH_FACEBOOK_KEY = '433294417989709'
-SOCIAL_AUTH_FACEBOOK_SECRET = 'a541eb397904b41763aa631c99078f81'
+SOCIAL_AUTH_FACEBOOK_KEY = '****'
+SOCIAL_AUTH_FACEBOOK_SECRET = '****'
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['instagram_basic', 'pages_show_list', 'pages_read_engagement', 'instagram_manage_insights']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
     'fields': 'id,name,picture,accounts.fields(id,name,picture,tasks,category,instagram_business_account.fields(id,name,username,profile_picture_url))'
@@ -195,8 +195,8 @@ SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
 SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/new_social_auth_user'
 SOCIAL_AUTH_LOGIN_ERROR_URL = '/social_error_url'
 
-SOCIAL_AUTH_ACCESS_TOKEN = 'EAAGKFDfeEE0BAEjOu8xMijlObVx4ZBbXKRgpYLT4IvaPnGOadvu55OsG5oy0t8srV3224ytP6wM7xK4CFxBKRj7TwmQGQu55KnaUwjLLvntERz02ZBvkutjjWF1DPkyJ0iEVH73aIoS9ZCXjsT96IWlkCRZBtCUaNztHcJykWAZDZD'
-SOCIAL_AUTH_INSTAGRAM_ADMIN_BUSINESSID = '17841407968025388'
+SOCIAL_AUTH_ACCESS_TOKEN = '****'
+SOCIAL_AUTH_INSTAGRAM_ADMIN_BUSINESSID = '****'
 
 LOGIN_URL = '/'
 
